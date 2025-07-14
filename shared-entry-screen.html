@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Journal - Shared Entry</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6b46c1;
+            --primary-light: #9f7aea;
+            --primary-dark: #553c9a;
+            --secondary-color: #f687b3;
+            --background-color: #f7fafc;
+            --text-color: #2d3748;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        .mood-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .audio-player {
+            width: 100%;
+            height: 80px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+        }
+        
+        .audio-waveform {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .waveform-bar {
+            width: 3px;
+            background-color: var(--primary-light);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen py-8 px-4">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header with Logo -->
+            <div class="flex justify-center mb-8">
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold text-purple-800">Voice Journal</h1>
+                    <p class="text-sm text-gray-600">Shared Journal Entry</p>
+                </div>
+            </div>
+            
+            <!-- Shared Entry Card -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <!-- Entry Header -->
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-purple-800">Team Meeting Reflections</h2>
+                        <div class="text-sm text-gray-500">
+                            April 22, 2025
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center text-gray-600">
+                        <span>Shared by John Smith</span>
+                        <span class="mx-2">•</span>
+                        <span class="text-purple-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                            Shared Entry
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Audio Player -->
+                <div class="p-6 border-b border-gray-200">
+                    <div class="audio-player">
+                        <div class="flex items-center mb-3">
+                            <button class="w-10 h-10 flex items-center justify-center bg-purple-600 text-white rounded-full hover:bg-purple-700 mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                </svg>
+                            </button>
+                            <div class="flex-1">
+                                <div class="audio-waveform">
+                                    <!-- Generate 40 bars with random heights -->
+                                    <div class="waveform-bar" style="height: 20%;"></div>
+                                    <div class="waveform-bar" style="height: 30%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 80%;"></div>
+                                    <div class="waveform-bar" style="height: 90%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 30%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 80%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 30%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 80%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 30%;"></div>
+                                    <div class="waveform-bar" style="height: 40%;"></div>
+                                    <div class="waveform-bar" style="height: 50%;"></div>
+                                    <div class="waveform-bar" style="height: 60%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                    <div class="waveform-bar" style="height: 80%;"></div>
+                                    <div class="waveform-bar" style="height: 70%;"></div>
+                                </div>
+                            </div>
+                            <div class="ml-4 text-gray-500">
+                                1:24
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Entry Content -->
+                <div class="p-6">
+                    <div class="prose max-w-none mb-6">
+                        <p class="text-gray-700">Today I had a really productive meeting with the team. We discussed the upcoming project timeline and assigned responsibilities. I'm feeling optimistic about our progress, though there are still some challenges to overcome with the technical implementation. I need to follow up with Sarah about the design assets and check in with Mark about the backend integration.</p>
+                        <p class="text-gray-700 mt-4">The client seems happy with our progress so far, which is a relief. We've managed to address most of their concerns from the last review. I think if we can maintain this momentum, we'll be in good shape for the final delivery next month.</p>
+                    </div>
+                    
+                    <!-- Mood and Topics -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Mood</h3>
+                        <span class="mood-tag">optimistic</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Topics</h3>
+                        <div class="flex flex-wrap">
+                            <span class="topic-tag">work</span>
+                            <span class="topic-tag">project</span>
+                            <span class="topic-tag">team</span>
+                            <span class="topic-tag">planning</span>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Analysis -->
+                    <div class="bg-purple-50 rounded-lg p-4 mb-6">
+                        <h3 class="text-lg font-semibold text-purple-800 mb-2">AI Analysis</h3>
+                        <p class="text-gray-700">This entry reflects a positive outlook on professional collaboration. The author shows leadership qualities in planning follow-up actions and maintaining client relationships. There's a balance of satisfaction with current progress and awareness of remaining challenges.</p>
+                    </div>
+                    
+                    <!-- Hero's Journey Snippet -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">From the Hero's Journey</h3>
+                        <p class="text-gray-700 italic">In the realm of professional challenges, our hero navigates the complex landscape of project deadlines and team dynamics. Recently faced with client expectations and technical hurdles, they've rallied their team and created a path forward. This moment of optimism marks a turning point in their journey, as they balance confidence with the awareness of obstacles still to overcome.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Actions -->
+            <div class="mt-8 flex justify-center space-x-4">
+                <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Go to Voice Journal
+                </a>
+                
+                <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    Copy Share Link
+                </button>
+            </div>
+            
+            <!-- Powered By -->
+            <div class="mt-8 text-center text-sm text-gray-500">
+                Powered by Voice Journal - Your thoughts, your voice, your story.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

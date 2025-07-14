@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Journal - Browse Entries</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6b46c1;
+            --primary-light: #9f7aea;
+            --primary-dark: #553c9a;
+            --secondary-color: #f687b3;
+            --background-color: #f7fafc;
+            --text-color: #2d3748;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(107, 70, 193, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .nav-item svg {
+            margin-right: 0.5rem;
+        }
+        
+        .entry-card {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .entry-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mood-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: white;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-pill button {
+            margin-left: 0.5rem;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        
+        .filter-pill button:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md p-6 hidden md:block">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-purple-800">Voice Journal</h1>
+                <p class="text-sm text-gray-600">Record your thoughts</p>
+            </div>
+            
+            <nav>
+                <a href="#" class="nav-item mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                    Record
+                </a>
+                <a href="#" class="nav-item active mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Browse
+                </a>
+                <a href="#" class="nav-item mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Ask Journal
+                </a>
+                <a href="#" class="nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Insights
+                </a>
+            </nav>
+            
+            <div class="mt-auto pt-6 border-t border-gray-200 mt-8">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold">
+                        JS
+                    </div>
+                    <div class="ml-3">
+                        <p class="font-medium">John Smith</p>
+                        <p class="text-xs text-gray-500">john@example.com</p>
+                    </div>
+                </div>
+                <button class="mt-4 w-full px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Mobile Header -->
+            <div class="md:hidden bg-white p-4 flex items-center justify-between shadow">
+                <h1 class="text-xl font-bold text-purple-800">Voice Journal</h1>
+                <button class="p-2 rounded-md hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Browse Entries -->
+            <div class="p-6 max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-purple-800">Browse Entries</h2>
+                    <button class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        New Entry
+                    </button>
+                </div>
+                
+                <!-- Search and Filters -->
+                <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                placeholder="Search journal entries..." 
+                                class="w-full p-3 pl-10 border border-gray-300 rounded"
+                            >
+                            <div class="absolute left-3 top-3 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center">
+                        <div class="mr-4 mb-2">
+                            <label class="text-sm text-gray-600 mr-2">Sort by:</label>
+                            <select class="p-2 border border-gray-300 rounded">
+                                <option>Newest first</option>
+                                <option>Oldest first</option>
+                                <option>Title A-Z</option>
+                                <option>Title Z-A</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mr-4 mb-2">
+                            <label class="text-sm text-gray-600 mr-2">Mood:</label>
+                            <select class="p-2 border border-gray-300 rounded">
+                                <option>All moods</option>
+                                <option>Optimistic</option>
+                                <option>Happy</option>
+                                <option>Excited</option>
+                                <option>Calm</option>
+                                <option>Stressed</option>
+                                <option>Anxious</option>
+                                <option>Sad</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mr-4 mb-2">
+                            <label class="text-sm text-gray-600 mr-2">Date:</label>
+                            <select class="p-2 border border-gray-300 rounded">
+                                <option>All time</option>
+                                <option>Today</option>
+                                <option>This week</option>
+                                <option>This month</option>
+                                <option>Last 3 months</option>
+                                <option>Custom range</option>
+                            </select>
+                        </div>
+                        
+                        <button class="px-4 py-2 bg-purple-100 text-purple-800 rounded hover:bg-purple-200 mb-2">
+                            More Filters
+                        </button>
+                    </div>
+                    
+                    <!-- Active Filters -->
+                    <div class="mt-4">
+                        <div class="filter-pill">
+                            Mood: Optimistic
+                            <button>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="filter-pill">
+                            Contains: "project"
+                            <button>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <button class="text-sm text-purple-600 hover:text-purple-800 ml-2">
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Entries List -->
+                <div class="space-y-4">
+                    <!-- Entry 1 -->
+                    <div class="entry-card bg-white">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-xl font-semibold text-purple-800">Team Meeting Reflections</h3>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">Apr 22, 2025</span>
+                                    <div class="relative group">
+                                        <button class="p-1 rounded-full hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            </svg>
+                                        </button>
+                                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-10">
+                                            <div class="py-1">
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Entry</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Share Entry</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete Entry</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p class="text-gray-700 mb-4">Today I had a really productive meeting with the team. We discussed the upcoming project timeline and assigned responsibilities. I'm feeling optimistic about our progress, though there are still some challenges to overcome with the technical implementation. I need to follow up with Sarah about the design assets and check in with Mark about the backend integration.</p>
+                            
+                            <div class="flex items-center mb-4">
+                                <button class="p-2 bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    </svg>
+                                </button>
+                                <span class="text-sm text-gray-500">1:24</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <span class="mood-tag">optimistic</span>
+                                </div>
+                                
+                                <div class="flex space-x-2 mt-2 sm:mt-0">
+                                    <button class="px-3 py-1 bg-purple-100 text-purple-800 rounded hover:bg-purple-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                        </svg>
+                                        Share
+                                    </button>
+                                    
+                                    <button class="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Entry 2 -->
+                    <div class="entry-card bg-white">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-xl font-semibold text-purple-800">Weekend Plans</h3>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">Apr 21, 2025</span>
+                                    <div class="relative group">
+                                        <button class="p-1 rounded-full hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            </svg>
+                                        </button>
+                                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-10">
+                                            <div class="py-1">
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Entry</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Share Entry</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete Entry</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p class="text-gray-700 mb-4">I'm looking forward to this weekend. Planning to go hiking at Mount Rainier if the weather holds up. Need to prepare my gear and check the trail conditions. It's been too long since I've been out in nature, and I could really use the break from screens and work stress. Hoping to take some good photos if the visibility is good.</p>
+                            
+                            <div class="flex items-center mb-4">
+                                <button class="p-2 bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    </svg>
+                                </button>
+                                <span class="text-sm text-gray-500">0:58</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <span class="mood-tag">excited</span>
+                                </div>
+                                
+                                <div class="flex space-x-2 mt-2 sm:mt-0">
+                                    <button class="px-3 py-1 bg-purple-100 text-purple-800 rounded hover:bg-purple-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                        </svg>
+                                        Share
+                                    </button>
+                                    
+                                    <button class="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Entry 3 -->
+                    <div class="entry-card bg-white">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-xl font-semibold text-purple-800">Project Deadline Stress</h3>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">Apr 19, 2025</span>
+                                    <div class="relative group">
+                                        <button class="p-1 rounded-full hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            </svg>
+                                        </button>
+                                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-10">
+                                            <div class="py-1">
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Entry</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Share Entry</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete Entry</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p class="text-gray-700 mb-4">Feeling a bit overwhelmed with the upcoming deadline. There's still so much to do and not enough time. I need to prioritize better and maybe ask for some help. The client expectations are high, and I don't want to deliver something that's rushed or incomplete. Going to make a detailed plan tonight and see if I can delegate some tasks tomorrow.</p>
+                            
+                            <div class="flex items-center mb-4">
+                                <button class="p-2 bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    </svg>
+                                </button>
+                                <span class="text-sm text-gray-500">1:42</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <span class="mood-tag" style="background-color: #fc8181;">stressed</span>
+                                </div>
+                                
+                                <div class="flex space-x-2 mt-2 sm:mt-0">
+                                    <button class="px-3 py-1 bg-purple-100 text-purple-800 rounded hover:bg-purple-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                        </svg>
+                                        Share
+                                    </button>
+                                    
+                                    <button class="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="flex justify-between items-center mt-6">
+                        <div class="text-sm text-gray-600">
+                            Showing 1-3 of 42 entries
+                        </div>
+                        
+                        <div class="flex space-x-1">
+                            <button class="px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300 disabled:opacity-50" disabled>
+                                Previous
+                            </button>
+                            <button class="px-3 py-1 bg-purple-600 text-white rounded">
+                                1
+                            </button>
+                            <button class="px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300">
+                                2
+                            </button>
+                            <button class="px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300">
+                                3
+                            </button>
+                            <button class="px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300">
+                                ...
+                            </button>
+                            <button class="px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300">
+                                14
+                            </button>
+                            <button class="px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

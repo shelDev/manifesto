@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #6200ee;
+  --primary-light: #9b4dff;
+  --primary-dark: #4b00b5;
+  --secondary: #03dac6;
+  --accent1: #ff6e40;
+  --accent2: #b39ddb;
+  --background: #f5f5f5;
+  --background-paper: #ffffff;
+  --background-dark: #f0f0f0;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --text-light: #9e9e9e;
+  --border: #e0e0e0;
+  --success: #4caf50;
+  --error: #f44336;
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--background);
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-full font-medium transition-colors;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-black hover:bg-secondary-dark;
+  }
+  
+  .btn-outline {
+    @apply border border-primary text-primary hover:bg-primary hover:text-white;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow p-4;
+  }
+  
+  .input {
+    @apply w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+  }
+  
+  .badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .badge-primary {
+    @apply bg-primary-light text-white;
+  }
+  
+  .badge-success {
+    @apply bg-success text-white;
+  }
+  
+  .badge-error {
+    @apply bg-error text-white;
+  }
+}

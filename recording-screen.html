@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Journal - Recording</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6b46c1;
+            --primary-light: #9f7aea;
+            --primary-dark: #553c9a;
+            --secondary-color: #f687b3;
+            --background-color: #f7fafc;
+            --text-color: #2d3748;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(107, 70, 193, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .nav-item svg {
+            margin-right: 0.5rem;
+        }
+        
+        .record-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(107, 70, 193, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(107, 70, 193, 0.4);
+        }
+        
+        .record-button.recording {
+            background-color: #e53e3e;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 10px rgba(229, 62, 62, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 15px rgba(229, 62, 62, 0.4);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 10px rgba(229, 62, 62, 0.3);
+            }
+        }
+        
+        .waveform-container {
+            height: 100px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .waveform {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .waveform-bar {
+            width: 3px;
+            background-color: var(--primary-light);
+            border-radius: 3px;
+            transition: height 0.1s ease;
+        }
+        
+        .mood-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .calm-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(107, 70, 193, 0.97);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md p-6 hidden md:block">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-purple-800">Voice Journal</h1>
+                <p class="text-sm text-gray-600">Record your thoughts</p>
+            </div>
+            
+            <nav>
+                <a href="#" class="nav-item mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item active mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                    Record
+                </a>
+                <a href="#" class="nav-item mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Browse
+                </a>
+                <a href="#" class="nav-item mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Ask Journal
+                </a>
+                <a href="#" class="nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Insights
+                </a>
+            </nav>
+            
+            <div class="mt-auto pt-6 border-t border-gray-200 mt-8">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold">
+                        JS
+                    </div>
+                    <div class="ml-3">
+                        <p class="font-medium">John Smith</p>
+                        <p class="text-xs text-gray-500">john@example.com</p>
+                    </div>
+                </div>
+                <button class="mt-4 w-full px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Mobile Header -->
+            <div class="md:hidden bg-white p-4 flex items-center justify-between shadow">
+                <h1 class="text-xl font-bold text-purple-800">Voice Journal</h1>
+                <button class="p-2 rounded-md hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Recording Interface -->
+            <div class="p-6 max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-purple-800">Record Your Thoughts</h2>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600 mr-2">Calm Mode</span>
+                        <label class="switch relative inline-block w-12 h-6">
+                            <input type="checkbox" class="opacity-0 w-0 h-0">
+                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300 before:absolute before:h-4 before:w-4 before:left-1 before:bottom-1 before:bg-white before:rounded-full before:transition-all before:duration-300"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Journal Prompt -->
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-purple-800 mb-2">Today's Journal Prompt</h3>
+                    <p class="text-gray-700">What's one thing that challenged you this week, and how did you respond to it?</p>
+                </div>
+                
+                <!-- Recording Controls -->
+                <div class="flex flex-col items-center mb-8">
+                    <button class="record-button mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </button>
+                    <p class="text-gray-600">Tap to start recording</p>
+                </div>
+                
+                <!-- Waveform Visualization (Hidden until recording) -->
+                <div class="waveform-container mb-8 hidden">
+                    <div class="waveform">
+                        <!-- Generate 50 bars with random heights -->
+                        <div class="waveform-bar" style="height: 20%;"></div>
+                        <div class="waveform-bar" style="height: 30%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 80%;"></div>
+                        <div class="waveform-bar" style="height: 90%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 30%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 80%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 30%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 80%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 30%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 80%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 30%;"></div>
+                        <div class="waveform-bar" style="height: 40%;"></div>
+                        <div class="waveform-bar" style="height: 50%;"></div>
+                        <div class="waveform-bar" style="height: 60%;"></div>
+                        <div class="waveform-bar" style="height: 70%;"></div>
+                        <div class="waveform-bar" style="height: 80%;"></div>
+                    </div>
+                </div>
+                
+                <!-- Transcription Result (Hidden until recording is done) -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Transcription</h3>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-700">This week I faced a significant challenge with the project deadline being moved up unexpectedly. I had to reorganize my priorities and communicate with the team about adjusting our timeline. Initially, I felt overwhelmed, but I broke down the tasks into smaller, manageable pieces and delegated where appropriate. We managed to meet the new deadline without compromising on quality, which was a relief. I learned that I work well under pressure when I maintain a structured approach and clear communication with the team.</p>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-md font-semibold text-gray-700 mb-2">Title</h4>
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded" value="Handling Unexpected Deadline Changes">
+                    </div>
+                </div>
+                
+                <!-- AI Analysis (Hidden until recording is done) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Mood Analysis</h3>
+                        <div class="flex items-center mb-4">
+                            <span class="mood-tag">resilient</span>
+                        </div>
+                        <p class="text-gray-700">Your entry reflects a resilient attitude toward challenges. You showed adaptability and problem-solving skills when faced with unexpected changes.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Topics</h3>
+                        <div class="flex flex-wrap">
+                            <span class="topic-tag">work</span>
+                            <span class="topic-tag">deadlines</span>
+                            <span class="topic-tag">teamwork</span>
+                            <span class="topic-tag">problem-solving</span>
+                            <span class="topic-tag">stress-management</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Save/Discard Buttons (Hidden until recording is done) -->
+                <div class="flex justify-center space-x-4 hidden">
+                    <button class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Save Entry
+                    </button>
+                    
+                    <button class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Discard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Calm Mode Overlay (Hidden by default) -->
+    <div class="calm-mode hidden">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold mb-2">Calm Mode</h2>
+            <p class="text-xl opacity-80">Focus on your thoughts</p>
+        </div>
+        
+        <button class="record-button recording mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+            </svg>
+        </button>
+        
+        <p class="text-xl opacity-80">Recording... 00:45</p>
+        
+        <div class="mt-8">
+            <button class="px-6 py-2 bg-white text-purple-800 rounded-lg hover:bg-opacity-90">
+                Exit Calm Mode
+            </button>
+        </div>
+    </div>
+</body>
+</html>
